@@ -1,41 +1,69 @@
 #include <Servo.h> 
 
+int serialState;
 const int numMotors = 4;
 
-Servo myservo[numMotors];  // create servo object to control a servo 
-                // a maximum of eight servo objects can be created 
+String directionName[numMotors];
+int directionVal[numMotors];
 
-// initialize motor positions
-int motorPosition[numMotors] = {128, 128, 128, 128};
-
-int serialState;
+// initialize motor speeds
+int motorVelocity[numMotors] = {
+  0, 0, 0, 0};
+// pin mappings for SeaMate board
+int motorPinDigital[numMotors] = {
+  2, 4, 7, 8};
+int motorPinAnalog[numMotors] = {
+  3, 5, 6, 9};
 
 void setup() 
 { 
+  pinMode(8, OUTPUT); 
+  pinMode(7, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(2, OUTPUT);
   Serial.begin(9600);
-  serialState = -1;
-  myservo[0].attach(3);  // attaches the servo on pin 3 to the servo object 
-  myservo[1].attach(5);  
-  myservo[2].attach(6);  
-  myservo[3].attach(9);  
+  directionName[0] = "Surge";
+  directionName[1] = "Sway";
+  directionName[2] = "Heave";
+  directionName[3] = "Yaw";
 } 
-
 
 void updateMotorController() {
   // iterate through all motors
   for (int i=0; i < numMotors; i++) {
-    myservo[i].write(motorPosition[i]);
+    // extract speed and direction
+    int vel = motorVelocity[i];
+    int spd = abs(vel);
+    int dir = vel > 0 ? HIGH : LOW;
+
+    // set speed and direction
+    
+   for ( int i = 0 ; i < numMotors ; i++ )  {
+    int maxVarForMotor[numMotors] = {255, 255, 255, 255};
+    directionVal[ i ] = map(motorVelocity[ i ], 0, 127, -maxVarForMotor[i], maxVarForMotor[i]);
+   }
+    
+    analogWrite(motorPinAnalog[i], spd);
+    digitalWrite(motorPinDigital[i], dir);
   }
 }
 
-int intOfDigitChar(char digit) {
+int forceOfChar(char digit) {
  switch (digit) {
-  case '0': return 0;
-  case '1': return 1;
-  case '2': return 2;
-  case '3': return 3;
+  case 's': return 0;
+  case 'w': return 1;
+  case 'h': return 2;
+  case 'y': return 3;
   default: return -1;
  } 
+}
+
+void printDirections()  {
+  for ( int i = 0 ; i < numMotors ; i++ )  {
+    Serial.print( directionName[i] +": " +directionVal[i] );
+    Serial.print( "\t\t" );
+  }
+  Serial.println();
 }
 
 void loop() 
@@ -45,12 +73,13 @@ void loop()
   if (Serial.available() > 0) {
     incomingByte = Serial.read();
     if (serialState == -1) {
-      serialState = intOfDigitChar(incomingByte);
+      serialState = forceOfChar(incomingByte);
     } else {
-      motorPosition[serialState] = incomingByte;
+      motorVelocity[serialState] = incomingByte;
       serialState = -1;
     }
   }
   
   updateMotorController();
+  printDirections();
 }
