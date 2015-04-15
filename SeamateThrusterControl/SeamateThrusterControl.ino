@@ -75,11 +75,12 @@ void loop()
     if (serialState == -1) {
       serialState = forceOfChar(incomingByte);
     } else {
-      motorVelocity[serialState] = incomingByte;
+      //double the range of the income byte and make it from -127 - 127
+      motorVelocity[serialState] = 2*(incomingByte) - 127;
       serialState = -1;
     }
   }
   
   updateMotorController();
-  printDirections();
+  //printDirections(); //Only use during debugging
 }
