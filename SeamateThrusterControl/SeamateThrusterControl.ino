@@ -1,3 +1,4 @@
+        //Underwater Robotics Team 2015
         #include <Servo.h> 
         
         int nextDesireForce; //index of next desire value
@@ -11,10 +12,10 @@
         // initialize motor speeds
         int motorVelocity[numMotors] = {
           0, 0, 0, 0};
-        const int leftMotor = 0;
-        const int rightMotor = 1;
-        const int backMotor = 2;
-        const int cornerMotor = 3;
+        const int leftMotor = 0; //MTR1
+        const int rightMotor = 1; //MTR2
+        const int backMotor = 2; //MTR3
+        const int cornerMotor = 3; //MTR4
         
         int desireForcce[numForces] = { 
           0 , 0 , 0, 0};
@@ -35,10 +36,18 @@
           directionName[1] = "Sway";
           directionName[2] = "Heave";
           directionName[3] = "Yaw";
-          nextDesireForce = -1;
+          nextDesireForce = -1; 
         } 
         
         void updateMotorController() {
+
+          int maxValForMotor[numMotors]; // = {255, 255, 255, 255};
+          maxValForMotor[leftMotor] = 255;
+          maxValForMotor[rightMotor] = 255;
+          maxValForMotor[backMotor] = 255;
+          maxValForMotor[cornerMotor] = 255 / 2;
+
+
           // iterate through all motors
           for (int i=0; i < numMotors; i++) {
             // extract speed and direction
@@ -49,7 +58,6 @@
             // set speed and direction
             
            for ( int i = 0 ; i < numMotors ; i++ )  {
-            int maxValForMotor[numMotors] = {255, 255, 255, 255};
             spd = min (maxValForMotor[i], spd); //saftey line for the max value 
       //      directionVal[ i ] = map(motorVelocity[ i ], 0, 127, -maxValForMotor[i], maxValForMotor[i]);
            }
@@ -60,11 +68,11 @@
         }
         
         void desireToVelocity(){
-          const float k = 1; 
-          const float a = 1; 
-          const float b = 1; 
-          const float c = 1; 
-          const float d = 1;
+          const float k = 1; // surge coff 
+          const float a = 1; // yaw coff
+          const float b = 1; // sway coff
+          const float c = 1; // yaw coff for the back
+          const float d = 1; // sway coff for the back
           
           int s = desireForce[0];
           int w = desireForce[1];
