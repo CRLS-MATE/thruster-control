@@ -13,15 +13,18 @@
           // initialize motor speeds
           int motorVelocity[numMotors] = {
             0, 0, 0, 0};
+
+          int motorPolarity[numMotors] = {true, false, false, false};
             
           // 0 = MTR1
           // 1 = MTR2
           // 2 = MTR3
           // 3 = MTR4
-          const int leftMotor = 2; 
-          const int rightMotor = 1; 
-          const int backMotor = 3; 
-          const int cornerMotor = 0; 
+          const int leftMotor = 1; 
+          const int rightMotor = 3; 
+          const int backMotor = 0; 
+          
+          const int cornerMotor = 2; 
           
    
           
@@ -58,13 +61,14 @@
             maxValForMotor[leftMotor] = 255;
             maxValForMotor[rightMotor] = 255;
             maxValForMotor[backMotor] = 255;
-            maxValForMotor[cornerMotor] = 192; // should probably stay below 192
+            maxValForMotor[cornerMotor] = 255; // should probably stay below 192 if we are driving 4 corner motors
   
   
             // iterate through all motors
             for (int i=0; i < numMotors; i++) {
               // extract speed and direction
               int vel = motorVelocity[i];
+              if (!motorPolarity[i]) vel = vel * -1;
               int spd = abs(vel);
               int dir = vel > 0 ? HIGH : LOW;
               
@@ -80,16 +84,16 @@
              }
               
               analogWrite(motorPinAnalog[i], spd);
-              digitalWrite(motorPinDigital[i], dir);
+              digitalWrite(motorPinDigital[i], dir );
             }
           }
           
           void desireToVelocity(){
             const float k = 1; // surge coff 
-            const float a = -1; // yaw coff
+            const float a = 1; // yaw coff
             const float b = 1; // sway coff
             const float c = 1; // yaw coff for the back
-            const float d = 1; // sway coff for the back
+            const float d = -1; // sway coff for the back
             
             int s = desireForce[0];
             int w = desireForce[1];
