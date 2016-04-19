@@ -32,25 +32,6 @@ void setup(){
   delay(1000); // delay to allow the ESC to recognize the stopped signal
 }
 
-void loop() {
-  int incomingByte; //to store byte
-
-  if(Serial.available()>0)
-  {
-    incomingByte = Serial.read(); //stores next serial value
-    evaluateByte(incomingByte); //sends to function to read serial value
-  }
-
-        motorOutputs[0] = motorPolarities[0] * joystickForces[0]; // Vertical Motor
-        motorOutputs[1] = motorPolarities[1] * (joystickForces[1] + joystickForces[2]); // Left Side Motor
-        motorOutputs[2] = motorPolarities[2] * (joystickForces[1] - joystickForces[2]); // Right Side Motor
-          for (int i = 0; i < numberOfMotors; i++) {
-          motorOutputs[i] = constrain(map(motorOutputs[i], -100, 100, minMotorOutput, maxMotorOutput), minMotorOutput, maxMotorOutput);
-
-            for(int i = 0; i < numberOfMotors; i++) {
-    servos[i].writeMicroseconds(motorOutputs[i]);
-  }
-}
 void evaluateByte(int theByte) {
   if (readyForVal) {
     joystickForces[joystickForceIndex] = map(theByte, 0, 127, -100, 100); //change the value to between -100 and 100 and put it in the correct spot in the array.
@@ -71,3 +52,24 @@ int charToIndex(char digit) { // gives value corresponding to a motor. This is u
     default: return -1;
   }
 }
+
+void loop() {
+  int incomingByte; //to store byte
+
+  if(Serial.available()>0)
+  {
+    incomingByte = Serial.read(); //stores next serial value
+    evaluateByte(incomingByte); //sends to function to read serial value
+  }
+
+        motorOutputs[0] = motorPolarities[0] * joystickForces[0]; // Vertical Motor
+        motorOutputs[1] = motorPolarities[1] * (joystickForces[1] + joystickForces[2]); // Left Side Motor
+        motorOutputs[2] = motorPolarities[2] * (joystickForces[1] - joystickForces[2]); // Right Side Motor
+          for (int i = 0; i < numberOfMotors; i++) {
+          motorOutputs[i] = constrain(map(motorOutputs[i], -100, 100, minMotorOutput, maxMotorOutput), minMotorOutput, maxMotorOutput);
+
+            for(int i = 0; i < numberOfMotors; i++) {
+    servos[i].writeMicroseconds(motorOutputs[i]);
+  }
+}
+
