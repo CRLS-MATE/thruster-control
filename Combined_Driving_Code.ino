@@ -26,7 +26,7 @@ void setup(){
   Serial.begin(9600);
 
     for(int i = 0; i < numberOfMotors; i++) {
-    servos[i].attach(servoPins[i]);
+    servos[i].attach(servoPins[i]); // attach each motor to an arduino pin
     servos[i].writeMicroseconds(1500);
   }
   delay(1000); // delay to allow the ESC to recognize the stopped signal
@@ -37,7 +37,7 @@ void loop() {
 
   if(Serial.available()>0)
   {
-    incomingByte = Serial.read();
+    incomingByte = Serial.read(); //stores next serial value
     evaluateByte(incomingByte); //sends to function to read serial value
   }
 
@@ -53,7 +53,7 @@ void loop() {
 }
 void evaluateByte(int theByte) {
   if (readyForVal) {
-    joystickForces[joystickForceIndex] = map(theByte, 0, 127, -1.0, 1.0); //change the value to between -1 and 1 and put it in the correct spot in the array.
+    joystickForces[joystickForceIndex] = map(theByte, 0, 127, -100, 100); //change the value to between -100 and 100 and put it in the correct spot in the array.
     readyForVal = false;
   }
   else {
