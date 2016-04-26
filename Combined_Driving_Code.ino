@@ -45,10 +45,10 @@ void evaluateByte(int theByte) {
 
 int charToIndex(char digit) { // gives value corresponding to a motor. This is used to update the spot corresponding to that motor.
   switch (digit) {
-    case 's': return 0;
-    case 'w': return 1;
-    case 'h': return 2;
-    case 'y': return 3;
+    case 's': return 1;
+    case 'w': return 3;
+    case 'h': return 0;
+    case 'y': return 2;
     default: return -1;
   }
 }
