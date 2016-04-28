@@ -7,8 +7,8 @@
 const int numForces = 4;
 const int numberOfMotors = 3;
 const int motorPolarities[numberOfMotors] = {1, 1, 1}; // 1 for foreward, -1 for reverse
-const int maxMotorOutput = 1700;
-const int minMotorOutput = 1300;
+const int maxMotorOutput = 1720;
+const int minMotorOutput = 1280;
 
 //END OF CONSTANTS
 
