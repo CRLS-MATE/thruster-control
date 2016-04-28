@@ -19,13 +19,13 @@ int joystickForceIndex; //stores the joystick number
 int motorOutputs[numberOfMotors]; // Output
 
 Servo servos[numberOfMotors];
-byte servoPins[numberOfMotors] = {3,6,9}; //Assign Pins Here (Up, Left, Right)
+byte servoPins[numberOfMotors] = {3, 6, 9}; //Assign Pins Here (Up, Left, Right)
 
 
-void setup(){
+void setup() {
   Serial.begin(9600);
 
-    for(int i = 0; i < numberOfMotors; i++) {
+  for (int i = 0; i < numberOfMotors; i++) {
     servos[i].attach(servoPins[i]); // attach each motor to an arduino pin
     servos[i].writeMicroseconds(1500);
   }
@@ -56,20 +56,20 @@ int charToIndex(char digit) { // gives value corresponding to a motor. This is u
 void loop() {
   int incomingByte; //to store byte
 
-  if(Serial.available()>0)
+  if (Serial.available() > 0)
   {
     incomingByte = Serial.read(); //stores next serial value
     evaluateByte(incomingByte); //sends to function to read serial value
+
+
+    motorOutputs[0] = motorPolarities[0] * joystickForces[0]; // Vertical Motor
+    motorOutputs[1] = motorPolarities[1] * (joystickForces[1] + joystickForces[2]); // Left Side Motor
+    motorOutputs[2] = motorPolarities[2] * (joystickForces[1] - joystickForces[2]); // Right Side Motor
+    for (int i = 0; i < numberOfMotors; i++) {
+      motorOutputs[i] = constrain(map(motorOutputs[i], -100, 100, minMotorOutput, maxMotorOutput), minMotorOutput, maxMotorOutput);
+
+      for (int i = 0; i < numberOfMotors; i++) {
+        servos[i].writeMicroseconds(motorOutputs[i]);
+      }
+    }
   }
-
-        motorOutputs[0] = motorPolarities[0] * joystickForces[0]; // Vertical Motor
-        motorOutputs[1] = motorPolarities[1] * (joystickForces[1] + joystickForces[2]); // Left Side Motor
-        motorOutputs[2] = motorPolarities[2] * (joystickForces[1] - joystickForces[2]); // Right Side Motor
-          for (int i = 0; i < numberOfMotors; i++) {
-          motorOutputs[i] = constrain(map(motorOutputs[i], -100, 100, minMotorOutput, maxMotorOutput), minMotorOutput, maxMotorOutput);
-
-            for(int i = 0; i < numberOfMotors; i++) {
-    servos[i].writeMicroseconds(motorOutputs[i]);
-  }
-}
-
