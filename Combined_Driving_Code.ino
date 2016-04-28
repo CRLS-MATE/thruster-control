@@ -19,7 +19,7 @@ int joystickForceIndex; //stores the joystick number
 int motorOutputs[numberOfMotors]; // Output
 
 Servo servos[numberOfMotors];
-byte servoPins[numberOfMotors] = {9,10,11}; //Assign Pins Here (Up, Left, Right)
+byte servoPins[numberOfMotors] = {3,6,9}; //Assign Pins Here (Up, Left, Right)
 
 
 void setup(){
