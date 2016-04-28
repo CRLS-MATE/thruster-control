@@ -6,7 +6,7 @@
 //CONSTANTS!!!
 const int numForces = 4;
 const int numberOfMotors = 3;
-const int motorPolarities[numberOfMotors] = {1, 1, 1}; // 1 for foreward, -1 for reverse
+const int motorPolarities[numberOfMotors] = {-1, -1, -1}; // 1 for foreward, -1 for reverse
 const int maxMotorOutput = 1720;
 const int minMotorOutput = 1280;
 
@@ -65,11 +65,15 @@ void loop() {
     motorOutputs[0] = motorPolarities[0] * joystickForces[0]; // Vertical Motor
     motorOutputs[1] = motorPolarities[1] * (joystickForces[1] + joystickForces[2]); // Left Side Motor
     motorOutputs[2] = motorPolarities[2] * (joystickForces[1] - joystickForces[2]); // Right Side Motor
+    
     for (int i = 0; i < numberOfMotors; i++) {
       motorOutputs[i] = constrain(map(motorOutputs[i], -100, 100, minMotorOutput, maxMotorOutput), minMotorOutput, maxMotorOutput);
-
-      for (int i = 0; i < numberOfMotors; i++) {
-        servos[i].writeMicroseconds(motorOutputs[i]);
-      }
+      /*Serial.print("Motor");
+      Serial.print(i);
+      Serial.print(motorOutputs[i]);*/
+    }
+    for (int i = 0; i < numberOfMotors; i++) {
+      servos[i].writeMicroseconds(motorOutputs[i]);
     }
   }
+}
