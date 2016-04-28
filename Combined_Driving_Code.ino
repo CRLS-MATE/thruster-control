@@ -7,8 +7,8 @@
 const int numForces = 4;
 const int numberOfMotors = 3;
 const int motorPolarities[numberOfMotors] = {1, 1, 1}; // 1 for foreward, -1 for reverse
-const int maxMotorOutput = 1900;
-const int minMotorOutput = 1100;
+const int maxMotorOutput = 1700;
+const int minMotorOutput = 1300;
 
 //END OF CONSTANTS
 
@@ -19,7 +19,7 @@ int joystickForceIndex; //stores the joystick number
 int motorOutputs[numberOfMotors]; // Output
 
 Servo servos[numberOfMotors];
-byte servoPins[numberOfMotors] = {1,2,3}; //Assign Pins Here
+byte servoPins[numberOfMotors] = {9,10,11}; //Assign Pins Here
 
 
 void setup(){
