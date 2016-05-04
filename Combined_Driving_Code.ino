@@ -55,6 +55,7 @@ int charToIndex(char digit) { // gives value corresponding to a motor. This is u
 
 void loop() {
   int incomingByte; //to store byte
+  int motorLevels[numberOfMotors]; // intermediate calculation - -100 to 100
 
   if (Serial.available() > 0)
   {
@@ -62,16 +63,29 @@ void loop() {
     evaluateByte(incomingByte); //sends to function to read serial value
 
 
-    motorOutputs[0] = motorPolarities[0] * joystickForces[0]; // Vertical Motor
-    motorOutputs[1] = motorPolarities[1] * (joystickForces[1] + joystickForces[2]); // Left Side Motor
-    motorOutputs[2] = motorPolarities[2] * (joystickForces[1] - joystickForces[2]); // Right Side Motor
+    motorLevels[0] = motorPolarities[0] * joystickForces[0]; // Vertical Motor
+    motorLevels[1] = motorPolarities[1] * (joystickForces[1] - joystickForces[2]); // Left Side Motor
+    motorLevels[2] = motorPolarities[2] * (joystickForces[1] + joystickForces[2]); // Right Side Motor
     
     for (int i = 0; i < numberOfMotors; i++) {
-      motorOutputs[i] = constrain(map(motorOutputs[i], -100, 100, minMotorOutput, maxMotorOutput), minMotorOutput, maxMotorOutput);
-      /*Serial.print("Motor");
-      Serial.print(i);
-      Serial.print(motorOutputs[i]);*/
+      // calculate actual PWM value
+      motorOutputs[i] = constrain(map(motorLevels[i], -100, 100, minMotorOutput, maxMotorOutput), minMotorOutput, maxMotorOutput);
     }
+
+    // when running with the joystick, this should always be "if (0)" !
+    if (0) {
+      for (int i = 0; i < numberOfMotors; i++) {
+        Serial.print("Motor:");
+        Serial.print(i);
+        Serial.print(" ");
+        Serial.print(motorLevels[i]);
+        Serial.print(" ");
+        Serial.print(motorOutputs[i]);
+        Serial.print("    ");
+      }
+      Serial.println("");
+    }
+
     for (int i = 0; i < numberOfMotors; i++) {
       servos[i].writeMicroseconds(motorOutputs[i]);
     }
